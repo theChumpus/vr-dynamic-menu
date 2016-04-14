@@ -11,16 +11,17 @@ public class JSONLoader : MonoBehaviour
 	string imageUrlKey = "imageUrl";
 
 	IEnumerator Start () {
-
 		WWW www = new WWW (baseUrl + "/videos.json");
 		yield return www;
 		JSONObject videos = new JSONObject (www.text);
+		loadPrefabsFromJson (videos);
+	}
 
+	void loadPrefabsFromJson(JSONObject json) {
 		float rotation = 0f;
 		float y = 0f;
 
-		for (int i = 0; i < videos.list.Count; i++) {
-
+		for (int i = 0; i < json.list.Count; i++) {
 			float radius = 5f;
 			float radians = Mathf.Deg2Rad *  rotation;
 			float x = radius * Mathf.Sin (radians);
@@ -29,7 +30,7 @@ public class JSONLoader : MonoBehaviour
 
 			GameObject videoSphere = Instantiate (videoSpherePrefab, pos, Quaternion.identity) as GameObject;
 
-			JSONObject obj = videos.list [i];
+			JSONObject obj = json.list [i];
 			string imageUrl = baseUrl + obj[imageUrlKey].str;
 			StartCoroutine(LoadImageTexture (videoSphere, imageUrl));
 
